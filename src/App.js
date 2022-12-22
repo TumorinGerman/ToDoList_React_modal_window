@@ -3,6 +3,28 @@ import { useImmer } from "use-immer";
 import getModal from "./modals/index.js";
 import { Button } from "react-bootstrap";
 
+const renderTasks = ({ id, taskText }) => {
+  return (
+    <div key={id}>
+      <span className="mr-3">{taskText}</span>
+      <Button
+        type="button"
+        className="border-0 btn btn-link mr-3 text-decoration-none"
+        data-testid="item-rename"
+      >
+        rename
+      </Button>
+      <Button
+        type="button"
+        className="border-0 btn btn-link text-decoration-none"
+        data-testid="item-remove"
+      >
+        remove
+      </Button>
+    </div>
+  );
+};
+
 const App = () => {
   const [isActiveAddForm, setAddFormState] = useState(false);
   const [tasks, addTask] = useState([]);
@@ -26,23 +48,7 @@ const App = () => {
         </Button>
       </div>
       {tasks.length === 0 ? null : (
-        <div>
-          <span className="mr-3">first task!</span>
-          <Button
-            type="button"
-            className="border-0 btn btn-link mr-3 text-decoration-none"
-            data-testid="item-rename"
-          >
-            rename
-          </Button>
-          <Button
-            type="button"
-            className="border-0 btn btn-link text-decoration-none"
-            data-testid="item-remove"
-          >
-            remove
-          </Button>
-        </div>
+        <>{tasks.map((task) => renderTasks(task))}</>
       )}
       {isActiveAddForm ? (
         <Add

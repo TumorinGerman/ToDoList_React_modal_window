@@ -20,7 +20,7 @@ const Add = (props) => {
         },
         onSubmit: values => {
             const [...allTasks] = props.tasks;
-            allTasks.push({id: _.uniqueId(), task: values});
+            allTasks.push({id: _.uniqueId(), taskText: values.task});
             props.addTask(allTasks);
             props.setAddFormState(false);
         },
