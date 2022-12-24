@@ -12,7 +12,7 @@ const Add = (props) => {
 
     const closeHandle = () => {
         props.setAddFormState(false);
-    }
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -20,7 +20,7 @@ const Add = (props) => {
         },
         onSubmit: values => {
             const [...allTasks] = props.tasks;
-            allTasks.push({id: _.uniqueId(), taskText: values.task});
+            allTasks.unshift({id: _.uniqueId(), taskText: values.task});
             props.addTask(allTasks);
             props.setAddFormState(false);
         },
@@ -38,14 +38,20 @@ const Add = (props) => {
                 <Modal.Body>
                     <Form onSubmit={formik.handleSubmit}>
                         <FormGroup className="mb-3" id="task">
-                            <FormControl  ref={inputEl} id="task" placeholder="Enter your task"  value={formik.values.task} onChange={formik.handleChange}/>
+                            <FormControl  
+                                ref={inputEl} 
+                                id="task" 
+                                placeholder="Enter your task"  
+                                value={formik.values.task} 
+                                onChange={formik.handleChange}
+                            />
                             <Button variant="dark" as="input" type="submit" value="Submit" />{' '}
                         </FormGroup>
                     </Form>
                 </Modal.Body>
             </Modal.Dialog>
         </div>
-    )
-}
+    );
+};
 
 export default Add;

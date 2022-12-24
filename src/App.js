@@ -1,36 +1,49 @@
 import React, { useState } from "react";
-import { useImmer } from "use-immer";
 import getModal from "./modals/index.js";
 import { Button } from "react-bootstrap";
 
-const renderTasks = ({ id, taskText }) => {
+const renderTasks = (
+  { id, taskText },
+  setRenameFormState,
+  setRemoveFormState,
+  setActiveTaskId
+) => {
+  const renameTaskHandle = () => {
+    setActiveTaskId(id);
+    setRenameFormState(true);
+  };
+
+  const removeTaskHandle = () => {
+    setActiveTaskId(id);
+    setRemoveFormState(true);
+  };
+
   return (
-    <div key={id}>
+    <div className="taskContainer" key={id} id={id}>
       <span className="mr-3">{taskText}</span>
-      <Button
-        type="button"
-        className="border-0 btn btn-link mr-3 text-decoration-none"
-        data-testid="item-rename"
-      >
-        rename
-      </Button>
-      <Button
-        type="button"
-        className="border-0 btn btn-link text-decoration-none"
-        data-testid="item-remove"
-      >
-        remove
-      </Button>
+      <div className="buttonsContainer">
+        <Button variant="primary" onClick={renameTaskHandle}>
+          rename
+        </Button>
+        <Button variant="danger" onClick={removeTaskHandle}>
+          remove
+        </Button>
+      </div>
     </div>
   );
 };
 
 const App = () => {
   const [isActiveAddForm, setAddFormState] = useState(false);
+  const [isActiveRenameForm, setRenameFormState] = useState(false);
+  const [isActiveRemoveForm, setRemoveFormState] = useState(false);
+  const [activeTaskId, setActiveTaskId] = useState(null);
   const [tasks, addTask] = useState([]);
   const Add = getModal("adding");
+  const Rename = getModal("renaming");
+  const Remove = getModal("removing");
 
-  const clickHandle = () => {
+  const clickAddHandle = () => {
     setAddFormState(true);
   };
 
@@ -38,7 +51,7 @@ const App = () => {
     <>
       <div className="mb-3">
         <Button
-          onClick={clickHandle}
+          onClick={clickAddHandle}
           variant="dark"
           type="button"
           data-testid="item-add"
@@ -48,13 +61,38 @@ const App = () => {
         </Button>
       </div>
       {tasks.length === 0 ? null : (
-        <>{tasks.map((task) => renderTasks(task))}</>
+        <>
+          {tasks.map((task) =>
+            renderTasks(
+              task,
+              setRenameFormState,
+              setRemoveFormState,
+              setActiveTaskId
+            )
+          )}
+        </>
       )}
       {isActiveAddForm ? (
         <Add
           tasks={tasks}
           addTask={addTask}
           setAddFormState={setAddFormState}
+        />
+      ) : null}
+      {isActiveRenameForm ? (
+        <Rename
+          tasks={tasks}
+          addTask={addTask}
+          activeTaskId={activeTaskId}
+          setRenameFormState={setRenameFormState}
+        />
+      ) : null}
+      {isActiveRemoveForm ? (
+        <Remove
+          tasks={tasks}
+          addTask={addTask}
+          activeTaskId={activeTaskId}
+          setRemoveFormState={setRemoveFormState}
         />
       ) : null}
     </>
